@@ -1,0 +1,16 @@
+@model SellerProfileViewModel
+@{
+    ViewData["Title"] = "Seller Profile";
+}
+
+<h2>Seller Profile</h2>
+
+<div class="profile-section">
+    <p><strong>First Name:</strong> @Model.FirstName</p>
+    <p><strong>Last Name:</strong> @Model.LastName</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Education:</strong> @Model.Education</p>
+    <p><strong>Bio:</strong> @Model.Bio</p>
+</div>
+
+<a href="@Url.Action("EditSeller", "Profile")" class="btn btn-primary">Edit Profile</a>
