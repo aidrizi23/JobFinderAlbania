@@ -17,4 +17,6 @@ public class ProfileViewModel
     
     [StringLength(500)]
     public string? Bio { get; set; }
+    
+    public DateTime JoinDate { get; set; }
 }
