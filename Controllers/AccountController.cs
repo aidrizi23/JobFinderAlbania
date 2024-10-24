@@ -169,8 +169,14 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+          
             
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            
+            if(user != null && user.LockoutEnd > DateTimeOffset.Now && user.AccountDeletionRequested)
+                await RecoverAccount(user);
+            
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 return RedirectToAction("Index", "Home");
@@ -180,6 +186,14 @@ public class AccountController : Controller
         }
         
         return View(model);
+    }
+
+    private async Task RecoverAccount(User user)
+    {
+            user.LockoutEnd = null;
+            user.AccountDeletionRequested = false;
+            await _userManager.UpdateAsync(user);
+        
     }
     
     // here will also be implemented the forgot password and reset password methods and also the lockout method later.
