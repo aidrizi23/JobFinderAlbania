@@ -9,4 +9,7 @@ public class User : IdentityUser<string>
     public string? Bio { get; set; }
     public string? ProfilePicture { get; set; }
     public DateTime JoinDate { get; set; } = DateTime.Now;
+
+
+    public bool AccountDeletionRequested { get; set; } = false;
 }

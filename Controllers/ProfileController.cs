@@ -60,6 +60,41 @@ public class ProfileController : Controller
         return NotFound();
     }
     
+    // now i will make a method that will allow the user to delete his account after he has confirmed his password
+    // the account deletion will be done in 30 days
+    // let's first make the get method
+    [Authorize]
+    [HttpGet]
+    public IActionResult DeleteAccount()
+    {
+        var model = new DeleteAccountViewModel();
+        return View(model);
+    }
+    
+    // now let's make the post method
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> DeleteAccount(DeleteAccountViewModel model)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var password = model.Password;
+        var result = await _userManager.CheckPasswordAsync(user, password); // checks if the password is correct
+        
+        if (result)
+        {
+            user.LockoutEnd = DateTimeOffset.Now.AddDays(30);
+            user.AccountDeletionRequested = true;
+            await _userManager.UpdateAsync(user);
+            
+            await _signInManager.SignOutAsync();
+            
+            return RedirectToAction("Index", "Home");
+        }
+        
+        ModelState.AddModelError("Password", "Password is incorrect");
+        
+        return RedirectToAction( "Login", "Account");
+    }
     
     
 }
