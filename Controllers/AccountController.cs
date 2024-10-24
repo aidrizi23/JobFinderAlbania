@@ -88,6 +88,7 @@ public class AccountController : Controller
                 NormalizedEmail = buyerModel.Email.ToUpper(),
                 LockoutEnabled = true,
                 JoinDate = DateTime.Today,
+                Bio = buyerModel.Bio,
                 
             };
             
@@ -120,7 +121,7 @@ public class AccountController : Controller
                 FirstName = sellerModel.FirstName,
                 LastName = sellerModel.LastName,
                 Email = sellerModel.Email,
-                Description = sellerModel.Description,
+                Bio = sellerModel.Bio,
                 Education = sellerModel.Education,
                 Rating = 0,
                 UserName = sellerModel.Email,

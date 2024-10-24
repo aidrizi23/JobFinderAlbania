@@ -8,6 +8,9 @@ public class BuyerRegistrationViewModel
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
+    
+    [StringLength(500)]
+    public string Bio { get; set; }
 
     // Buyer-specific fields
     [Display(Name = "Company Name")]

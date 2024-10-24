@@ -11,7 +11,8 @@ public class SellerRegistrationViewModel
 
     // Seller-specific fields
     [Display(Name = "Description")]
-    public string? Description { get; set; }
+    [StringLength(500)]
+    public string? Bio { get; set; }
 
     [Display(Name = "Education")]
     public string? Education { get; set; }

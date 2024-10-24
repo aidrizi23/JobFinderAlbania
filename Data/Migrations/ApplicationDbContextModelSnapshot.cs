@@ -30,6 +30,9 @@ namespace JobFinderAlbania.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -269,9 +272,6 @@ namespace JobFinderAlbania.Data.Migrations
             modelBuilder.Entity("JobFinderAlbania.Data.Seller", b =>
                 {
                     b.HasBaseType("JobFinderAlbania.Data.User");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Education")
                         .HasColumnType("nvarchar(max)");
