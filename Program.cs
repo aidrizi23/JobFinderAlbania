@@ -1,3 +1,4 @@
+using JobFinderAlbania.BackgroundServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using JobFinderAlbania.Data;
@@ -35,6 +36,8 @@ public class Program
         builder.Services.AddControllers(); // This line is crucial for enabling MVC controllers
         builder.Services.AddRazorPages(); // This line is crucial for enabling Razor Pages
         
+        
+        builder.Services.AddHostedService<AccountDeletionService>();  // Registered the AccountDeletionService as a hosted service to run in the background
         
 
         var app = builder.Build();
