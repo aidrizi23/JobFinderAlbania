@@ -16,11 +16,11 @@ public class AccountDeletionService : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        // Set the timer to call DoWork every hour (adjust as needed)
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(1));
+
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromDays(1));
         return Task.CompletedTask;
     }
-
+    
     private async void DoWork(object state)
     {
         // Create a scope to resolve scoped services

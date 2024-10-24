@@ -1,0 +1,21 @@
+@model DeleteAccountViewModel
+
+<h2>Delete Your Account</h2>
+
+<p>Are you sure you want to delete your account? This action cannot be undone.</p>
+<p>None of your data will be saved in our database system</p>
+
+<form asp-action="DeleteAccount" method="post">
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-danger">Delete Account</button>
+</form>
+
+<a href="@Url.Action("Index", "Profile")" class="btn btn-secondary">Cancel</a>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

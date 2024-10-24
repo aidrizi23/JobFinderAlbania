@@ -87,8 +87,6 @@ public class ProfileController : Controller
             await _userManager.UpdateAsync(user);
             await _signInManager.SignOutAsync();
             
-            TempData["Message"] = "Your account has been marked for deletion. You can recover it by logging in within 30 days.";
-            
             return RedirectToAction("Login", "Account");
             // this will redirect the user to the login page after he has requested the deletion of his account
         }
