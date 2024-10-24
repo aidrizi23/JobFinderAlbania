@@ -15,9 +15,10 @@ public class BuyerRegistrationViewModel
     // Buyer-specific fields
     [Display(Name = "Company Name")]
     public string? CompanyName { get; set; }
-
+    
     [Display(Name = "Payment Method")]
     public string PaymentMethod { get; set; }
+    
     
     [Required]
     [DataType(DataType.Password)]
