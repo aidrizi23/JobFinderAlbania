@@ -10,6 +10,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<string>
         : base(options)
     {
     }
-    
+    public DbSet<Buyer> Buyers { get; set; }
+    public DbSet<Seller> Sellers { get; set; }
     
 }

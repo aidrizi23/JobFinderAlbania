@@ -156,4 +156,36 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
     
+    // now we will add the login methods
+    
+    [HttpGet]
+    public IActionResult Login()
+    {
+        var model = new LoginViewModel();
+        return View(model);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        }
+        
+        return View(model);
+    }
+    
+    // here will also be implemented the forgot password and reset password methods and also the lockout method later.
+    
+    
+    
+    
 }

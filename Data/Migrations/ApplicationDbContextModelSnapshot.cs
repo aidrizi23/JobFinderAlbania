@@ -34,6 +34,11 @@ namespace JobFinderAlbania.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -99,6 +104,10 @@ namespace JobFinderAlbania.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("User");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<string>", b =>
@@ -232,6 +241,45 @@ namespace JobFinderAlbania.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("JobFinderAlbania.Data.Buyer", b =>
+                {
+                    b.HasBaseType("JobFinderAlbania.Data.User");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
+
+                    b.ToTable("AspNetUsers", t =>
+                        {
+                            t.Property("Rating")
+                                .HasColumnName("Buyer_Rating");
+                        });
+
+                    b.HasDiscriminator().HasValue("Buyer");
+                });
+
+            modelBuilder.Entity("JobFinderAlbania.Data.Seller", b =>
+                {
+                    b.HasBaseType("JobFinderAlbania.Data.User");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Education")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.HasDiscriminator().HasValue("Seller");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
