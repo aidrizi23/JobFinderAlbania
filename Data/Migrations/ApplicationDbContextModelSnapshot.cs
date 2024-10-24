@@ -30,6 +30,9 @@ namespace JobFinderAlbania.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("AccountDeletionRequested")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
@@ -257,15 +260,6 @@ namespace JobFinderAlbania.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Rating")
-                        .HasColumnType("float");
-
-                    b.ToTable("AspNetUsers", t =>
-                        {
-                            t.Property("Rating")
-                                .HasColumnName("Buyer_Rating");
-                        });
-
                     b.HasDiscriminator().HasValue("Buyer");
                 });
 
@@ -275,9 +269,6 @@ namespace JobFinderAlbania.Data.Migrations
 
                     b.Property<string>("Education")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
 
                     b.HasDiscriminator().HasValue("Seller");
                 });

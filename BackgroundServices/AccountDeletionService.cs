@@ -1,49 +1,52 @@
 ﻿using JobFinderAlbania.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobFinderAlbania.BackgroundServices;
 
 // this code is mostly produced by chat gpt as I was not familiar enough with the background services 😁
 public class AccountDeletionService : IHostedService, IDisposable
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ApplicationDbContext _dbContext;
     private Timer _timer;
+    private readonly IServiceProvider _serviceProvider;
 
-    public AccountDeletionService(IServiceScopeFactory scopeFactory, ApplicationDbContext dbContext)
+    public AccountDeletionService(IServiceProvider serviceProvider)
     {
-        _scopeFactory = scopeFactory;
-        _dbContext = dbContext;
+        _serviceProvider = serviceProvider;
     }
-
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        // Run the task every day (e.g., check at midnight daily)
-        _timer = new Timer(DeleteExpiredAccounts, null, TimeSpan.Zero, TimeSpan.FromDays(1));
+        // Set the timer to call DoWork every hour (adjust as needed)
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(1));
         return Task.CompletedTask;
     }
 
-    private async void DeleteExpiredAccounts(object state)
+    private async void DoWork(object state)
     {
-        using (var scope = _scopeFactory.CreateScope())
+        // Create a scope to resolve scoped services
+        using (var scope = _serviceProvider.CreateScope())
         {
-
-            // Query users where AccountDeletionRequested is true and LockoutEnd has passed
-            var usersToDelete = _dbContext.Users
-                .Where(u => u.AccountDeletionRequested && u.LockoutEnd <= DateTimeOffset.UtcNow)
-                .ToList();
-
-            if (usersToDelete.Any())
-            {
-                _dbContext.Users.RemoveRange(usersToDelete); // Remove users from the database (in mass)
-                await _dbContext.SaveChangesAsync(); 
-            }
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            await DeleteAccountsAsync(dbContext);
         }
+    }
+
+    private async Task DeleteAccountsAsync(ApplicationDbContext dbContext)
+    {
+        var usersToDelete = await dbContext.Users
+            .Where(u => u.LockoutEnd < DateTimeOffset.Now && u.AccountDeletionRequested)
+            .ToListAsync();
+
+        foreach (var user in usersToDelete)
+        {
+            dbContext.Users.Remove(user);
+        }
+        await dbContext.SaveChangesAsync();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _timer?.Change(Timeout.Infinite, 0); // Stop the timer when service stops
+        _timer?.Change(Timeout.Infinite, 0);
         return Task.CompletedTask;
     }
 
