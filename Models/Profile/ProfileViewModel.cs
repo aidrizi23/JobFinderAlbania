@@ -13,7 +13,7 @@ public class ProfileViewModel
     public required string LastName { get; set; }
     
     [EmailAddress]
-    public required string Email { get; set; }
+    public string Email { get; set; }
     
     [StringLength(500)]
     public string? Bio { get; set; }

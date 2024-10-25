@@ -97,4 +97,92 @@ public class ProfileController : Controller
     }
     
     
+    
+    // now i will make a method that will allow the user to edit his profile.
+    
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> EditProfile()
+    {
+        // first let's take the logged in user
+        var user = await _userManager.GetUserAsync(User);
+        
+        // now let's check if the user is a buyer or a seller
+        if(user is Buyer buyer)
+        {
+            var model = new EditBuyerProfileViewModel()
+            {
+                FirstName = buyer.FirstName,
+                LastName = buyer.LastName,
+                // Email = buyer.Email!,
+                Bio = buyer.Bio,
+                CompanyName = buyer.CompanyName,
+                PaymentMethod = buyer.PaymentMethod,
+            };
+            
+            return View("EditBuyerProfile", model);
+        }
+
+        if (user is Seller seller)
+        {
+            var model = new EditSellerProfileViewModel()
+            {
+                FirstName = seller.FirstName,
+                LastName = seller.LastName,
+                // Email = seller.Email!,
+                Bio = seller.Bio,
+                Education = seller.Education
+            };
+            return View("EditSellerProfile", model);
+        }
+        
+        return NotFound();
+    }
+    
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> EditBuyerProfile(EditBuyerProfileViewModel model)
+    {
+        // this will deal with the buyer profile
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user is Buyer buyer)
+        {
+            buyer.FirstName = model.FirstName;
+            buyer.LastName = model.LastName;
+            // buyer.Email = model.Email;
+            buyer.Bio = model.Bio;
+            buyer.CompanyName = model.CompanyName;
+            buyer.PaymentMethod = model.PaymentMethod!;
+            
+            await _userManager.UpdateAsync(buyer);
+            
+            return RedirectToAction("Index");
+        }
+        
+        return NotFound();
+    }
+    
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> EditSellerProfile(EditSellerProfileViewModel model)
+    {
+        // this will deal with the seller profile
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user is Seller seller)
+        {
+            seller.FirstName = model.FirstName;
+            seller.LastName = model.LastName;
+            // seller.Email = model.Email;
+            seller.Bio = model.Bio;
+            seller.Education = model.Education;
+            
+            await _userManager.UpdateAsync(seller);
+            
+            return RedirectToAction("Index");
+        }
+        
+        return NotFound();
+    }
 }
