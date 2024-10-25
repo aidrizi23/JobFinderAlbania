@@ -185,4 +185,42 @@ public class ProfileController : Controller
         
         return NotFound();
     }
+    
+    // now i will make a method that will allow the user to change his password
+    [Authorize]
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        var model = new ChangePasswordViewModel();
+        return View(model);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {   
+        // get the current user
+        var user = await _userManager.GetUserAsync(User);
+        
+        // now we will hash the given password by the model because we do not have the user's password saved
+        var changeResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+        if (!changeResult.Succeeded)
+        {
+            foreach (var error in changeResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+        
+        // the best practice in .net identity is to refresh the user's session because their current authentication session is based on their
+        // old password, so it would be best practice to sign them out and log back in. there already is a method for it.
+
+        await _signInManager.RefreshSignInAsync(user);
+
+        return RedirectToAction("EditProfile");
+
+    }
 }
