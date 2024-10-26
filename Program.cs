@@ -2,6 +2,7 @@ using JobFinderAlbania.BackgroundServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using JobFinderAlbania.Data;
+using JobFinderAlbania.Repositories;
 
 namespace JobFinderAlbania;
 
@@ -38,7 +39,10 @@ public class Program
         
         
         builder.Services.AddHostedService<AccountDeletionService>();  // Registered the AccountDeletionService as a hosted service to run in the background
-        
+
+
+        builder.Services.AddScoped<ISellerRepository, SellerRepository>();
+        builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
 
         var app = builder.Build();
 

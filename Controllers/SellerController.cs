@@ -1,6 +1,8 @@
 ﻿using JobFinderAlbania.Data;
 using JobFinderAlbania.Filters;
+using JobFinderAlbania.Pagination;
 using JobFinderAlbania.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,14 +13,16 @@ public class SellerController : Controller
     private readonly ISellerRepository _sellerRepository;
     private readonly UserManager<User> _userManager;
     
-    
-    public SellerController(ISellerRepository sellerRepository)
+    public SellerController(UserManager<User> userManager, ISellerRepository sellerRepository)
     {
+        _userManager = userManager;
         _sellerRepository = sellerRepository;
     }
     
     // this method will return a list of all sellers
-    public async Task<IActionResult> Index(int pageIndex, int pageSize)
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Index(int pageIndex = 1 , int pageSize = 10)
     {
         var sellers = await _sellerRepository.GetPaginatedSellers(pageIndex, pageSize);
         return View(sellers);
@@ -27,6 +31,8 @@ public class SellerController : Controller
    
     
     // this method will return a list of all sellers filtered
+    [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetSellerByFilters(SellerObjectQuery filters, int pageIndex, int pageSize)
     {
         var sellers = await _sellerRepository.GetSellerByFilters(filters, pageIndex, pageSize);

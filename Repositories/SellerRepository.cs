@@ -21,16 +21,25 @@ public class SellerRepository : ISellerRepository
     }
     
     // this method gets all sellers paginated
-    public async Task<PaginatedList<User>> GetPaginatedSellers(int pageIndex, int pageSize)
+    public async Task<PaginatedList<Seller>> GetPaginatedSellers(int pageIndex, int pageSize)
     {
-        return await PaginatedList<User>.CreateAsync(_dbContext.Users.AsNoTracking().OfType<Seller>(), pageIndex, pageSize);
+        return await PaginatedList<Seller>.CreateAsync(_dbContext.Users.AsNoTracking().OfType<Seller>(), pageIndex, pageSize);
     }
     
     // this method gets filtered sellers
-    public async Task<PaginatedList<User?>> GetSellerByFilters(SellerObjectQuery filters, int pageIndex, int pageSize)
+    public async Task<PaginatedList<Seller>> GetSellerByFilters(SellerObjectQuery query, int pageIndex, int pageSize)
     {
-        var sellers =  _dbContext.Sellers.AsNoTracking();
-        return await filters.ApplyFilters(sellers, pageIndex, pageSize);
+       
+        var sellers = _dbContext.Users.OfType<Seller>().AsNoTracking();
+
+
+        if (!string.IsNullOrWhiteSpace(query.FirstName))
+            sellers = sellers.Where(s => s.FirstName.ToLower().Contains(query.FirstName.ToLower()));
+
+        if (!string.IsNullOrWhiteSpace(query.LastName))
+            sellers = sellers.Where(s => s.LastName.ToLower().Contains(query.LastName.ToLower()));
+        
+        return await PaginatedList<Seller>.CreateAsync(sellers, pageIndex, pageSize);
     }
     
 }
@@ -38,6 +47,6 @@ public class SellerRepository : ISellerRepository
 public interface ISellerRepository
 {
     Task<IEnumerable<Seller>> GetAllSellers();
-    Task<PaginatedList<User>> GetPaginatedSellers(int pageIndex, int pageSize);
-    Task<PaginatedList<User?>> GetSellerByFilters(SellerObjectQuery filters, int pageIndex, int pageSize);
+    Task<PaginatedList<Seller>> GetPaginatedSellers(int pageIndex, int pageSize);
+    Task<PaginatedList<Seller?>> GetSellerByFilters(SellerObjectQuery filters, int pageIndex, int pageSize);
 }

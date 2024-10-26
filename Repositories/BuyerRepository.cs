@@ -28,10 +28,18 @@ public class BuyerRepository : IBuyerRepository
     }
     
     // this method gets filtered buyers
-    public async Task<PaginatedList<User?>> GetBuyerByFilters(BuyerObjectQuery filters, int pageIndex, int pageSize)
+    public async Task<PaginatedList<Buyer?>> GetBuyerByFilters(BuyerObjectQuery query, int pageIndex, int pageSize)
     {
-        var buyers = _dbContext.Buyers.AsNoTracking();
-        return await filters.ApplyFilters(buyers, pageIndex, pageSize);
+        var buyers =  _dbContext.Users.OfType<Buyer>().AsNoTracking();
+        if(!string.IsNullOrWhiteSpace(query.FirstName))
+            buyers = buyers.Where(b => b.FirstName.Contains(query.FirstName));
+        if(!string.IsNullOrWhiteSpace(query.LastName))
+            buyers = buyers.Where(b => b.LastName.Contains(query.LastName));
+        if(!string.IsNullOrWhiteSpace(query.CompanyName))
+            buyers = buyers.Where(b => b.CompanyName.Contains(query.CompanyName));
+        
+        return await PaginatedList<Buyer?>.CreateAsync(buyers, pageIndex, pageSize);
+        
     }
     
 }
@@ -40,5 +48,5 @@ public interface IBuyerRepository
 {
     Task<IEnumerable<Buyer>> GetAllBuyers();
     Task<PaginatedList<User>> GetPaginatedBuyers(int pageIndex, int pageSize);
-    Task<PaginatedList<User?>> GetBuyerByFilters(BuyerObjectQuery filters, int pageIndex, int pageSize);
+    Task<PaginatedList<Buyer?>> GetBuyerByFilters(BuyerObjectQuery filters, int pageIndex, int pageSize);
 }
