@@ -1,5 +1,6 @@
 ﻿using JobFinderAlbania.Data;
 using JobFinderAlbania.Filters;
+using JobFinderAlbania.Models.Seller;
 using JobFinderAlbania.Pagination;
 using JobFinderAlbania.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -39,5 +40,29 @@ public class SellerController : Controller
         ViewData["filters"] = filters;
         return View("Index", sellers);
     }
-    
+
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Details(string id)
+    {
+        var seller = await _sellerRepository.GetSellerById(id);
+        
+        if (seller == null)
+            return NotFound();
+        
+        // will be using mapping and a dto for this just so that we can choose the data to display in the backend easier
+        var dto = new SellerDetailsViewModel()
+        {
+            FirstName = seller.FirstName,
+            LastName = seller.LastName,
+            Email = seller.Email!,
+            PhoneNumber = seller.PhoneNumber ?? "No phone number",
+            Bio = seller.Bio,
+            ProfilePicture = seller.ProfilePicture, // make sure to add a default profile picture here in the future
+            Education = seller.Education,
+        };
+        
+        return View(dto);
+    }
 }

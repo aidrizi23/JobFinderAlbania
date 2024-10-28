@@ -1,5 +1,4 @@
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model JobFinderAlbania.Data.Seller
+@model JobFinderAlbania.Models.Seller.SellerDetailsViewModel
 
 @{
     ViewBag.Title = "Seller Details";
@@ -7,12 +6,40 @@
 
 <h2>Seller Details</h2>
 
-<div>
-    <p><strong>First Name:</strong> @Model.FirstName</p>
-    <p><strong>Last Name:</strong> @Model.LastName</p>
-    <p><strong>Email:</strong> @Model.Email</p>
-    <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+<div class="card">
+    <div class="card-header">
+        <h4>@Model.FirstName @Model.LastName</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                {
+                    <img src="@Url.Content(Model.ProfilePicture)" alt="Profile Picture" class="img-fluid rounded-circle" />
+                }
+                else
+                {
+                    <img src="~/images/default-profile.jpg" alt="Default Profile Picture" class="img-fluid rounded-circle" />
+                }
+            </div>
+            <div class="col-md-8">
+                <dl class="row">
+                    <dt class="col-sm-3">Email:</dt>
+                    <dd class="col-sm-9">@Model.Email</dd>
 
+                    <dt class="col-sm-3">Phone Number:</dt>
+                    <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+                    <dt class="col-sm-3">Bio:</dt>
+                    <dd class="col-sm-9">@Model.Bio</dd>
+
+                    <dt class="col-sm-3">Education:</dt>
+                    <dd class="col-sm-9">@Model.Education</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Index" class="btn btn-secondary">Back to Sellers</a>
+    </div>
 </div>
-
-<a asp-action="Index" class="btn btn-primary">Back to List</a>

@@ -26,6 +26,12 @@ public class SellerRepository : ISellerRepository
         return await PaginatedList<Seller>.CreateAsync(_dbContext.Users.AsNoTracking().OfType<Seller>(), pageIndex, pageSize);
     }
     
+    // this method gets the seller by Id    
+    public async Task<Seller?> GetSellerById(string id)
+    {
+        return await _dbContext.Sellers.FirstOrDefaultAsync(s => s.Id == id);
+    }
+    
     // this method gets filtered sellers
     public async Task<PaginatedList<Seller>> GetSellerByFilters(SellerObjectQuery query, int pageIndex, int pageSize)
     {
@@ -48,5 +54,6 @@ public interface ISellerRepository
 {
     Task<IEnumerable<Seller>> GetAllSellers();
     Task<PaginatedList<Seller>> GetPaginatedSellers(int pageIndex, int pageSize);
+    Task<Seller?> GetSellerById(string id);
     Task<PaginatedList<Seller?>> GetSellerByFilters(SellerObjectQuery filters, int pageIndex, int pageSize);
 }
