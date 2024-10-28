@@ -13,14 +13,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-4">
-                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
-                {
-                    <img src="@Url.Content(Model.ProfilePicture)" alt="Profile Picture" class="img-fluid rounded-circle" />
-                }
-                else
-                {
-                    <img src="~/images/default-profile.jpg" alt="Default Profile Picture" class="img-fluid rounded-circle" />
-                }
+                <img src="@Url.Content(Model.ProfilePicture)" alt="Profile Picture" class="img-fluid rounded-circle" />
             </div>
             <div class="col-md-8">
                 <dl class="row">
@@ -35,6 +28,9 @@
 
                     <dt class="col-sm-3">Education:</dt>
                     <dd class="col-sm-9">@Model.Education</dd>
+
+                    <dt class="col-sm-3">Education:</dt>
+                    <dd class="col-sm-9">@Model.JoinDate</dd>
                 </dl>
             </div>
         </div>

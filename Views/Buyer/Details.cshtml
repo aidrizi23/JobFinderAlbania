@@ -1,0 +1,39 @@
+@model JobFinderAlbania.Models.Buyer.BuyerDetailsViewModel
+
+@{
+    ViewBag.Title = $"{Model.FirstName} {Model.LastName} - Buyer Details";
+}
+
+<h2>Buyer Details</h2>
+
+<div class="card">
+    <div class="card-header">
+        <h4>@Model.FirstName @Model.LastName</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+                {
+                    <img src="@Url.Content(Model.ProfilePicture)" alt="Profile Picture" class="img-thumbnail" />
+                }
+                else
+                {
+                    <img src="~/path/to/default-profile-picture.png" alt="Default Profile Picture" class="img-thumbnail" />
+                }
+            </div>
+            <div class="col-md-8">
+                <p><strong>First Name:</strong> @Model.FirstName</p>
+                <p><strong>Last Name:</strong> @Model.LastName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+                <p><strong>Bio:</strong> @Model.Bio</p>
+                <p><strong>Date when joined:</strong> @Model.JoinDate</p>
+
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Index" class="btn btn-secondary">Back to Buyers List</a>
+    </div>
+</div>

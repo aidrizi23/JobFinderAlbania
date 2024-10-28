@@ -1,0 +1,74 @@
+@using JobFinderAlbania.Filters
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model JobFinderAlbania.Pagination.PaginatedList<JobFinderAlbania.Data.Buyer>
+@{
+    ViewBag.Title = "Buyers List";
+    var filters = ViewData["filters"] as BuyerObjectQuery ?? new BuyerObjectQuery();
+}
+
+<h2>Buyers List</h2>
+
+<!-- Filter Form -->
+<form asp-action="GetBuyerByFilters" method="get">
+    <input type="hidden" name="pageIndex" value="@Model.PageIndex" />
+    <input type="hidden" name="pageSize" value="@Model.PageSize" />
+
+    <div class="form-group">
+        <label for="FirstName">First Name</label>
+        <input type="text" name="filters.FirstName" class="form-control" placeholder="First Name" value="@filters.FirstName" />
+    </div>
+    <div class="form-group">
+        <label for="LastName">Last Name</label>
+        <input type="text" name="filters.LastName" class="form-control" placeholder="Last Name" value="@filters.LastName" />
+    </div>
+    <!-- Add more filters here -->
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a asp-action="Index" class="btn btn-secondary">Clear Filters</a>
+</form>
+
+<hr />
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var buyer in Model)
+            {
+                <tr>
+                    <td>@buyer.FirstName</td>
+                    <td>@buyer.LastName</td>
+                    <td>@buyer.Email</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@buyer.Id" class="btn btn-info">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
+                </li>
+
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageIndex + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
+else
+{
+    <p>No buyers found.</p>
+}

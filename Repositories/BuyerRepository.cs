@@ -22,9 +22,15 @@ public class BuyerRepository : IBuyerRepository
     }
     
     // this method gets all buyers paginated
-    public async Task<PaginatedList<User>> GetPaginatedBuyers(int pageIndex, int pageSize)
+    public async Task<PaginatedList<Buyer>> GetPaginatedBuyers(int pageIndex, int pageSize)
     {
-        return await PaginatedList<User>.CreateAsync(_dbContext.Users.AsNoTracking().OfType<Buyer>(), pageIndex, pageSize);
+        return await PaginatedList<Buyer>.CreateAsync(_dbContext.Users.AsNoTracking().OfType<Buyer>(), pageIndex, pageSize);
+    }
+    
+    // this method will get a buyer by Id
+    public async Task<Buyer?> GetBuyerById(string id)
+    {
+        return await _dbContext.Buyers.FirstOrDefaultAsync(b => b.Id == id);
     }
     
     // this method gets filtered buyers
@@ -47,6 +53,7 @@ public class BuyerRepository : IBuyerRepository
 public interface IBuyerRepository
 {
     Task<IEnumerable<Buyer>> GetAllBuyers();
-    Task<PaginatedList<User>> GetPaginatedBuyers(int pageIndex, int pageSize);
+    Task<PaginatedList<Buyer>> GetPaginatedBuyers(int pageIndex, int pageSize);
+    Task<Buyer?> GetBuyerById(string id);
     Task<PaginatedList<Buyer?>> GetBuyerByFilters(BuyerObjectQuery filters, int pageIndex, int pageSize);
 }

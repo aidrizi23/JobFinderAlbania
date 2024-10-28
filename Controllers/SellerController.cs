@@ -59,8 +59,9 @@ public class SellerController : Controller
             Email = seller.Email!,
             PhoneNumber = seller.PhoneNumber ?? "No phone number",
             Bio = seller.Bio,
-            ProfilePicture = seller.ProfilePicture, // make sure to add a default profile picture here in the future
+            ProfilePicture = seller.ProfilePicture ?? "/images/default-profile.jpg", // make sure to add a default profile picture here in the future
             Education = seller.Education,
+            JoinDate = seller.JoinDate
         };
         
         return View(dto);
