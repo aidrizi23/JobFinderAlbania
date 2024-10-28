@@ -36,6 +36,7 @@ public class SellerController : Controller
     public async Task<IActionResult> GetSellerByFilters(SellerObjectQuery filters, int pageIndex, int pageSize)
     {
         var sellers = await _sellerRepository.GetSellerByFilters(filters, pageIndex, pageSize);
+        ViewData["filters"] = filters;
         return View("Index", sellers);
     }
     
