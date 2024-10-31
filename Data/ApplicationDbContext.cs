@@ -13,7 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<string>
     public DbSet<Buyer> Buyers { get; set; }
     public DbSet<Seller> Sellers { get; set; }
     
-    public DbSet<Category> Categories { get; set; }
+    public DbSet<Category?> Categories { get; set; }
     
     public DbSet<Service> Services { get; set; }
     
@@ -26,6 +26,14 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<string>
             .HasOne(s => s.Category)
             .WithMany(c => c.Services)
             .HasForeignKey(s => s.CategoryId);
+        
+        builder.Entity<Category>().HasData(
+            new Category { Id = 1, Name = "Graphic Design" },
+            new Category { Id = 2, Name = "Web Development" },
+            new Category { Id = 3, Name = "Content Writing" },
+            new Category { Id = 4, Name = "Digital Marketing" },
+            new Category { Id = 5, Name = "Video Editing" }
+        );
     }
     
 }

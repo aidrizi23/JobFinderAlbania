@@ -4,6 +4,7 @@ using JobFinderAlbania.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace JobFinderAlbania.Controllers;
 
@@ -12,13 +13,16 @@ public class ServiceController : Controller
     
     private readonly IServiceRepository _serviceRepository;
     private readonly UserManager<User> _userManager;
+    private readonly ICategoryRepository _categoryRepository;
     
-    public ServiceController(IServiceRepository serviceRepository, UserManager<User> userManager)
+    public ServiceController(IServiceRepository serviceRepository, UserManager<User> userManager, ICategoryRepository categoryRepository)
     {
         _serviceRepository = serviceRepository;
         _userManager = userManager;
+        _categoryRepository = categoryRepository;
     }
     
+    [Authorize]
     public async Task<IActionResult> Index(int pageIndex = 1 , int pageSize = 10 )
     {
         var services = await _serviceRepository.GetPaginatedServices(pageIndex, pageSize);
@@ -39,6 +43,7 @@ public class ServiceController : Controller
     [HttpGet]
     public async Task<IActionResult> Create()
     {
+        ViewBag.Categories = new SelectList(_categoryRepository.GetAllCategories(), "Id", "Name");
         return View(new ServiceForCreationDto());
     }
     
@@ -47,7 +52,10 @@ public class ServiceController : Controller
     public async Task<IActionResult> Create(ServiceForCreationDto serviceForCreationDto)
     {
         if (!ModelState.IsValid)
+        {
+            ViewBag.Categories = new SelectList(_categoryRepository.GetAllCategories(), "Id", "Name");
             return View(serviceForCreationDto);
+        }
         
         var user = await _userManager.GetUserAsync(User);
         
@@ -65,7 +73,7 @@ public class ServiceController : Controller
             Tags = serviceForCreationDto.Tags,
             IsActive = serviceForCreationDto.IsActive,
             Rating = 0,
-            
+            Image = serviceForCreationDto.Image,
             
             CategoryId = serviceForCreationDto.CategoryId,
             UserId = seller.Id
@@ -104,6 +112,7 @@ public class ServiceController : Controller
             CategoryId = service.CategoryId,
         };
         
+        ViewBag.Categories = new SelectList(_categoryRepository.GetAllCategories(), "Id", "Name", service.CategoryId);
         return View(serviceForEditDto);
     }
     
@@ -111,10 +120,15 @@ public class ServiceController : Controller
     [Authorize]
     public async Task<IActionResult> Edit(ServiceForEditDto serviceForEditDto)
     {
-        if (!ModelState.IsValid)
-            return View(serviceForEditDto);
-        
+       
+
         var service = await _serviceRepository.GetServiceById(serviceForEditDto.Id);
+        
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Categories = new SelectList(_categoryRepository.GetAllCategories(), "Id", "Name", service.CategoryId);
+            return View(serviceForEditDto);
+        }
         
         if (service == null)
             return NotFound();
@@ -149,8 +163,9 @@ public class ServiceController : Controller
         
         if(service.UserId != user.Id)
             return BadRequest("You are not the owner of this service");
-        
-        return View(service);
+
+        await _serviceRepository.DeleteService(service);
+        return RedirectToAction("Index");
     }
     
 }

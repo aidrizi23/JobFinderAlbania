@@ -44,6 +44,7 @@ public class Program
         builder.Services.AddScoped<ISellerRepository, SellerRepository>();
         builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
         builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
         var app = builder.Build();
 
