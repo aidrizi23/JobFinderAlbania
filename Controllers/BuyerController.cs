@@ -44,7 +44,7 @@ public class BuyerController : Controller
             return NotFound();
         
         // will be using mapping and a dto for this just so that we can choose the data to display in the backend easier
-        var dto = new BuyerDetailsViewModel()
+        var dto = new BuyerDetailsViewModel
         {
             FirstName = buyer.FirstName,
             LastName = buyer.LastName,
@@ -52,7 +52,7 @@ public class BuyerController : Controller
             PhoneNumber = buyer.PhoneNumber ?? "No phone number",
             Bio = buyer.Bio ?? "No bio",
             ProfilePicture = buyer.ProfilePicture ?? "  /images/default-profile.jpg",
-            JoinDate = buyer.JoinDate,
+            JoinDate = buyer.JoinDate
         };
         
         return View(dto);

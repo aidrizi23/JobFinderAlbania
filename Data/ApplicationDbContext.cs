@@ -13,4 +13,19 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<string>
     public DbSet<Buyer> Buyers { get; set; }
     public DbSet<Seller> Sellers { get; set; }
     
+    public DbSet<Category> Categories { get; set; }
+    
+    public DbSet<Service> Services { get; set; }
+    
+    
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        
+        builder.Entity<Service>()
+            .HasOne(s => s.Category)
+            .WithMany(c => c.Services)
+            .HasForeignKey(s => s.CategoryId);
+    }
+    
 }
