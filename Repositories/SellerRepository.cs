@@ -17,19 +17,28 @@ public class SellerRepository : ISellerRepository
     // this method gets all sellers
     public async Task<IEnumerable<Seller>> GetAllSellers()
     {
-        return await _dbContext.Sellers.AsNoTracking().ToListAsync();
+        return await _dbContext.Sellers
+            .Include(x => x.Services)
+            .AsSplitQuery()
+            .AsNoTracking()
+            .ToListAsync();
     }
     
     // this method gets all sellers paginated
     public async Task<PaginatedList<Seller>> GetPaginatedSellers(int pageIndex, int pageSize)
     {
-        return await PaginatedList<Seller>.CreateAsync(_dbContext.Users.AsNoTracking().OfType<Seller>(), pageIndex, pageSize);
+        return await PaginatedList<Seller>.CreateAsync(_dbContext.Users
+            .AsNoTracking()
+            .OfType<Seller>()
+            .Include(x => x.Services), pageIndex, pageSize);
     }
     
     // this method gets the seller by Id    
     public async Task<Seller?> GetSellerById(string id)
     {
-        return await _dbContext.Sellers.FirstOrDefaultAsync(s => s.Id == id);
+        return await  _dbContext.Sellers
+            .Include(x => x.Services)
+            .FirstOrDefaultAsync(s => s.Id == id);
     }
     
     // this method gets filtered sellers
@@ -45,7 +54,7 @@ public class SellerRepository : ISellerRepository
         if (!string.IsNullOrWhiteSpace(query.LastName))
             sellers = sellers.Where(s => s.LastName.ToLower().Contains(query.LastName.ToLower()));
         
-        return await PaginatedList<Seller>.CreateAsync(sellers, pageIndex, pageSize);
+        return await PaginatedList<Seller>.CreateAsync(sellers.Include(x => x.Services), pageIndex, pageSize);
     }
     
 }
